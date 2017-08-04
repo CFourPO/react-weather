@@ -2,41 +2,30 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
+import Day from './Day/Day';
+import SearchForm from './Form/Form';
+import {Button, Col, Grid, Row} from 'react-bootstrap';
 
-const Resp = (props) => {
-  return (
-    <p>{props.currently}</p>
-  )
-}
 
-const Hour = (props) => {
-  let myHourTime = props.hourTime.getHours();
-  let ampm = (myHourTime >= 12) ? 'PM' : 'AM';
-
-  return (
-    <div>
-      <h3>{'' + (myHourTime != 12 ? myHourTime % 12 : 12) + ':00' + ampm}</h3>
-      <p>{props.summary}</p>
-
-      <p><b>Apparent Temperature: </b>{props.apparentTemperature}</p>
-      <p><b>Cloud Cover: </b>{props.cloudCover}</p>
-    </div>
-    )
-}
-
-const HourlyList = (props) => {
+const DailyList = (props) => {
   return (
       <div>
-        {props.hourly.map((hour, i) => <Hour hourTime={new Date(hour.time * 1000)} key={i} {...hour} /> )}
+        {props.daily.map((day, i) => <Day key={i} {...day} getHourlyForecast={props.getHourlyForecast}/> )}
       </div>
     )
 }
 
 class App extends Component {
   state = {
-    response: {},
-    hourly: []
+    response: [],
+    hourly: [],
+    daily: [],
+    lat: '',
+    lng: '',
+    hourlyForecast: []
   }
+
+
 
   submitRequest = () => {
     axios.get('/darksky')
@@ -48,12 +37,41 @@ class App extends Component {
       });
   }
 
+  addDays = response => {
+    console.log(response);
+    this.setState({
+      daily: response.data.dayDetails,
+      lat: response.data.lat,
+      lng: response.data.lng
+    });
+  }
+
+  getHourlyForecast = time => {
+    axios.post('http://localhost:3000/hourly', {
+      lat: this.state.lat,
+      lng: this.state.lng,
+      time: time
+    }).then(response => {
+      this.setState({
+        hourlyForecast: response.data
+      })
+    })
+  }
+
   render() {
     return (
       <div className="App">
-        <HourlyList hourly={this.state.hourly} />
-        <button onClick={this.submitRequest}>Go!</button>
+        <Grid fluid={true}>
+          <Row>
+            <SearchForm onSubmit={this.addDays} />
+          </Row>
+          <Row>
+            <DailyList daily={this.state.daily} 
+                       getHourlyForecast={this.getHourlyForecast}/>
+          </Row>
+        </Grid>
       </div>
+
     );
   }
 }
