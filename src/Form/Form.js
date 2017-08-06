@@ -15,24 +15,24 @@ class SearchForm extends React.Component {
         address: this.state.address
       })
       .then(response => {
-        this.props.onSubmit(response.data);
+        console.log(response);
+        this.props.onSubmit(response.data.data);
       });
   };
 
   render() {
     return (
       <Form inline onSubmit={this.handleSubmit}>
-      <FormGroup>
-        
-        <FormControl
-              type="text"
-              value={this.state.address}
-              placeholder="Enter Address, City, or State"
-              onChange={event => this.setState({ address: event.target.value })}
-            />
-        
-        <Button inline bsStyle="primary">Get Weather</Button>
-        
+        <FormGroup>
+          
+          <FormControl
+                type="text"
+                value={this.state.address}
+                placeholder="Enter Address, City, or State"
+                onChange={event => this.setState({ address: event.target.value })}/>
+          
+          <Button inline bsStyle="primary">Get Weather</Button>
+    
         </FormGroup>
       </Form>
 

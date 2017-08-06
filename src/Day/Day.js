@@ -8,9 +8,8 @@ const Day = (props) => {
   let day = DAYS[props.dayOfWeek];
   return (
     <div className="day">
-        <Col xs={6}>
-            <h3 onClick={() => props.getHourlyForecast(props.details.time)}>{day}</h3>
-            <p>{props.summary}</p>
+        <Col xs={12} md={1}>
+            <h4 onClick={() => props.getHourlyForecast(props.time)}>{day}</h4>
             <p>{props.maxTemp.temp}</p>
             <p>{props.rain ? 'RAIN' : 'Dry'}</p>
         </Col>

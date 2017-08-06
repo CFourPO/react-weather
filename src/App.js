@@ -40,9 +40,9 @@ class App extends Component {
   addDays = response => {
     console.log(response);
     this.setState({
-      daily: response.data.dayDetails,
-      lat: response.data.lat,
-      lng: response.data.lng
+      daily: response.dayDetails,
+      lat: response.lat,
+      lng: response.lng
     });
   }
 
